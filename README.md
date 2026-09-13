@@ -127,35 +127,17 @@ Full outcome breakdown (all 8 graded categories) for each model is in
 
 ## Sample videos
 
-One `full_success` and one representative-failure clip per model, embedded directly below (the
-rest of the 150 videos are on Hugging Face Hub, linked above). Only one camera's footage ships
-per multi-camera config, to avoid a family member appearing in the dropped camera's frame — this
-does not affect the logged results, only which raw video clips are published.
+One `full_success` and one representative-failure clip per model (the rest of the 150 videos are
+on Hugging Face Hub, linked above). Click a link to open the file's page, where GitHub plays it
+inline. Only one camera's footage ships per multi-camera config, to avoid a family member
+appearing in the dropped camera's frame — this does not affect the logged results, only which raw
+video clips are published.
 
-<table>
-<tr><th>Config</th><th>Full success</th><th>Representative failure</th></tr>
-<tr>
-<td><b>1 camera</b></td>
-<td><video src="https://github.com/cons909/V1-LeRobot-SO101-Learning-by-Demonstration-SmolVLA/raw/main/media/1cam_trial007_full_success.mp4" controls width="260"></video></td>
-<td><video src="https://github.com/cons909/V1-LeRobot-SO101-Learning-by-Demonstration-SmolVLA/raw/main/media/1cam_trial004_timeout_grasped.mp4" controls width="260"></video></td>
-</tr>
-<tr>
-<td><b>2 cameras</b></td>
-<td><video src="https://github.com/cons909/V1-LeRobot-SO101-Learning-by-Demonstration-SmolVLA/raw/main/media/2cam_trial017_full_success.mp4" controls width="260"></video></td>
-<td><video src="https://github.com/cons909/V1-LeRobot-SO101-Learning-by-Demonstration-SmolVLA/raw/main/media/2cam_trial002_timeout_no_touch.mp4" controls width="260"></video></td>
-</tr>
-<tr>
-<td><b>Side + claw</b></td>
-<td><video src="https://github.com/cons909/V1-LeRobot-SO101-Learning-by-Demonstration-SmolVLA/raw/main/media/side_claw_trial018_full_success.mp4" controls width="260"></video></td>
-<td><video src="https://github.com/cons909/V1-LeRobot-SO101-Learning-by-Demonstration-SmolVLA/raw/main/media/side_claw_trial005_timeout_no_touch.mp4" controls width="260"></video></td>
-</tr>
-</table>
-
-*(If the embedded players don't render in your Markdown viewer, the same files are also plain
-links: [1cam success](media/1cam_trial007_full_success.mp4) /
-[failure](media/1cam_trial004_timeout_grasped.mp4), [2cam success](media/2cam_trial017_full_success.mp4) /
-[failure](media/2cam_trial002_timeout_no_touch.mp4), [side+claw success](media/side_claw_trial018_full_success.mp4) /
-[failure](media/side_claw_trial005_timeout_no_touch.mp4).)*
+| Config | Full success | Representative failure |
+|---|---|---|
+| 1 camera | [watch](media/1cam_trial007_full_success.mp4) | [watch](media/1cam_trial004_timeout_grasped.mp4) |
+| 2 cameras | [watch](media/2cam_trial017_full_success.mp4) | [watch](media/2cam_trial002_timeout_no_touch.mp4) |
+| Side + claw | [watch](media/side_claw_trial018_full_success.mp4) | [watch](media/side_claw_trial005_timeout_no_touch.mp4) |
 
 ## Challenges along the way
 
