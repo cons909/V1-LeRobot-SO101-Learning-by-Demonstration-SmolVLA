@@ -29,6 +29,7 @@ not try to improve on those results.
 - [Evaluation methodology](#evaluation-methodology)
 - [Results](#results)
 - [Sample videos](#sample-videos)
+- [What I learned](#what-i-learned)
 - [Challenges along the way](#challenges-along-the-way)
 - [What's next (V2)](#whats-next-v2)
 - [Repo structure](#repo-structure)
@@ -61,7 +62,7 @@ a demo reel of the best runs.
 **Checkpoint steps differ across configs** (20k / 50k / 20k) — this is disclosed, not
 normalized away. Each model is evaluated at its best available checkpoint from actual training,
 not at an artificially matched step count. See
-[`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) §2.
+[`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md).
 
 ## Evaluation methodology
 
@@ -102,7 +103,7 @@ Each bar is one camera configuration, stacked to 100% of its 50 trials, reading 
 Taller green = more full successes. A bar dominated by red means that config mostly never engaged
 the object in the first place — exactly what happened to the 2-camera config (78% `timeout_no_touch`),
 versus side + claw, which reaches nearly to full green before hitting mostly orange/red. Full
-definitions for every category are in [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) §4.
+definitions for every category are in [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md).
 
 Full per-trial data: [`results/`](results/README.md) (`trial_log.csv` per model,
 [`results/SUMMARY.txt`](results/SUMMARY.txt) for the generated tables). All 150 trial videos
@@ -139,6 +140,23 @@ not affect the logged results, only which raw video clips are published.
 | 2 cameras | [view/download](media/2cam_trial017_full_success.mp4) | [view/download](media/2cam_trial002_timeout_no_touch.mp4) |
 | Side + claw | [view/download](media/side_claw_trial018_full_success.mp4) | [view/download](media/side_claw_trial005_timeout_no_touch.mp4) |
 
+## What I learned
+
+- **More cameras isn't automatically better.** The 2-camera config was expected to help via
+  stereo-like depth cues, but it was the worst performer (2% full success) — worse than the
+  single-camera baseline (20%).
+- **Camera placement seems to matter more than camera count.** Side + claw, with two
+  deliberately-chosen viewpoints, clearly outperformed both other configs (30% full success),
+  while adding a second camera in a less useful position did not help at all.
+- **More visual context traded speed for decisiveness.** The best-performing config also had
+  the highest loop latency (253ms) and by far the fewest safety-clamp events (1.64/trial vs.
+  hundreds for the others) — it seems to have acted more deliberately, not just slower.
+- **Each config failed in a different way, not one common bottleneck.** 1-camera mostly grasped
+  the object but didn't finish in time (34% of trials); 2-camera and side + claw mostly never
+  touched the object at all (78% and 46%).
+- **N = 50 trials is enough to see clear directional differences, not enough for strong
+  statistical claims.** That's a real limitation of this evaluation, not something to gloss over.
+
 ## Challenges along the way
 
 - **Motor safety incident:** partway through evaluation, a wrist motor overheated during a run —
@@ -166,7 +184,7 @@ Full details, including every bug found and fixed, are in
   simultaneous hardware changes.
 - Consider an offline held-out action-prediction-error metric if a genuine train/validation
   split is introduced (dropped for V1 — see
-  [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) §7).
+  [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md)).
 
 ## Repo structure
 

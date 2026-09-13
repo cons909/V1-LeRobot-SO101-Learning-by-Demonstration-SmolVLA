@@ -1,25 +1,6 @@
-# Adapted for evaluation from Smoth VLA/robot_server_new.py (the verified 1-camera Pi server).
-# Changes from the original, all needed for the eval harness:
-#   1. Response key renamed "frame" -> "front_frame", to match the unified naming scheme used
-#      across all three model configs (front_frame / side_frame / claw_frame).
-#   2. The "action" response now also returns `action_sent` (the actually-executed, possibly
-#      clamped values) so the Mac-side harness can detect safety-clamp events by diffing the
-#      requested action against what was actually sent — no separate clamp counter needed.
-#   3. BGR->RGB conversion added right after cap.read(). Raw cv2.VideoCapture returns BGR;
-#      every other camera path in this project (LeRobot's OpenCVCameraConfig, used by the
-#      side+claw and front+side servers, and by the original lerobot-record pipeline that
-#      recorded this model's training data) returns RGB. Without this, the policy was being
-#      fed color-swapped input and the live preview showed swapped colors — a real bug, not
-#      cosmetic, since the model was trained on RGB frames.
-#   4. get_obs/action handlers now wrapped in try/except and report a real error message
-#      instead of crashing the whole server process or silently returning `{"ok": False}` with
-#      no detail — matching the more defensive pattern already used in the side+claw and
-#      front+side servers. Without this, the same intermittent servo-bus lock documented for
-#      side+claw ("Port is in use!") would kill this process instead of just failing one call.
-#   5. Top-level message parsing wrapped in try/except too, same reasoning.
-#   6. Startup check that the camera actually opened, so a wrong/shifted CAMERA_INDEX (e.g.
-#      after unplugging another USB camera) fails loudly at startup instead of silently.
-# The SAFE_LIMITS clipping / load-based HOLD / E-STOP logic is unchanged from the original.
+# Raspberry Pi server for the 1-camera (left side) SO-101 config. Serves get_obs/action over
+# ZMQ, converts camera frames from BGR to RGB, and reports action_sent for safety-clamp
+# detection. Includes SAFE_LIMITS angle clipping and load-based HOLD/E-STOP.
 
 import pickle
 import time
@@ -31,10 +12,7 @@ from lerobot.robots.so_follower import SO101Follower, SO101FollowerConfig
 
 ROBOT_PORT = "/dev/serial/by-id/usb-1a86_USB_Single_Serial_5AE6080769-if00"
 ROBOT_ID = "my_follower_arm"
-CAMERA_INDEX = 2   # Logitech HD Pro Webcam C920 — confirmed via v4l2-ctl --list-devices on the
-                    # Pi with both cameras connected (2026-08-30). Index 0 is the 5MP claw
-                    # camera in this configuration, not the intended one — indices depend on
-                    # which cameras are plugged in, don't assume 0 is always this camera.
+CAMERA_INDEX = 2   # Logitech HD Pro Webcam C920
 
 JOINTS = [
     "shoulder_pan.pos",
