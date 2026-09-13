@@ -53,11 +53,11 @@ a demo reel of the best runs.
 
 ## The three configurations
 
-| Config | Cameras | Checkpoint step | Notes |
-|---|---|---|---|
-| **1 camera** | Single left-side camera | 20,000 | Simplest setup; least visual context. |
-| **2 cameras** ("side left + side right") | Two side-mounted cameras | 50,000 | Internally the checkpoint's input feature keys are literally named `front`/`side` (that's what the trained model expects — a code-level detail, not a placement description). Started as a claw-mounted camera + one side camera; the claw camera was permanently swapped out mid-project for a second side camera, so this became genuinely two side views. |
-| **Side + claw** | One side camera + one claw-mounted camera | 20,000 | Subjectively the most capable of the three during earlier hand-testing, despite added latency from the claw camera's mount. |
+| Config | Cameras | Demonstrations | Checkpoint step | Notes |
+|---|---|:-:|:-:|---|
+| **1 camera** | Single left-side camera | 80 | 20,000 | Simplest setup; least visual context. |
+| **2 cameras** ("side left + side right") | Two side-mounted cameras | 80 | 50,000 | Internally the checkpoint's input feature keys are literally named `front`/`side` (that's what the trained model expects — a code-level detail, not a placement description). Started as a claw-mounted camera + one side camera; the claw camera was permanently swapped out mid-project for a second side camera, so this became genuinely two side views. |
+| **Side + claw** | One side camera + one claw-mounted camera | 80 | 20,000 | Subjectively the most capable of the three during earlier hand-testing, despite added latency from the claw camera's mount. |
 
 **Checkpoint steps differ across configs** (20k / 50k / 20k) — this is disclosed, not
 normalized away. Each model is evaluated at its best available checkpoint from actual training,
