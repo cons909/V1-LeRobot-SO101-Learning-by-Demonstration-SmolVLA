@@ -1,14 +1,5 @@
-# Adapted for evaluation from robot_server_side_claw_VERIFIED.py (the unmodified copy of what's
-# documented as deployed). ONE addition, nothing else touched: a "torque" command, so the Mac
-# harness can release the servos between trials (so the operator can freely reset the physical
-# environment) and re-engage them right before the next trial starts.
-#
-# `disable_torque_on_disconnect=False` is left as-is — that only affects what happens when the
-# script exits, not what happens between individual requests, so it doesn't conflict with this.
-#
-# Deploy target on the Pi: /home/<user>/robot_server.py (replaces the VERIFIED version for
-# actual eval_harness.py sessions — keep robot_server_side_claw_VERIFIED.py as the historical
-# record of what produced the original report's results, not as what's currently deployed).
+# Raspberry Pi server for the side+claw SO-101 config. Same as robot_server_side_claw_VERIFIED.py
+# plus a "torque" command, so the Mac harness can release/re-engage the servos between trials.
 
 import pickle
 import numpy as np

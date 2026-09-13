@@ -50,7 +50,7 @@ normal 1-4 categories, since "ran out of time" is a materially different failure
 model confidently reaching a wrong conclusion within a normal timeframe.
 
 Safety-clamp events are **not** a rubric outcome — they're logged as a continuous per-trial
-count instead (see §6), since a trial can have clamp events and still succeed, or have none and
+count instead (see the per-trial metrics section below), since a trial can have clamp events and still succeed, or have none and
 still fail.
 
 ## 5. Trial count

@@ -1,19 +1,6 @@
 """
-Automated evaluation trial harness — 2 CAMERAS (side left + side right) model only.
+Mac-side evaluation trial harness for the 2-camera (side left + side right) model.
 
-Standalone copy of eval_harness.py's logic, dedicated to this one model — does not import
-from or modify eval_harness.py. Behaves identically to it (same trial flow, same fixes):
-policy resets each trial, torque syncs to current position before each trial starts, 'n' ends
-a trial, 'r' redoes it (not logged), 'q' quits, overtime at TRIAL_TIMEOUT_S gets the reduced
-3-choice question, live preview throttled to every PREVIEW_EVERY_N loop.
-
-Start the Pi server first — camera indices in copies/robot_server_front_side_RECONSTRUCTED.py
-are placeholders, confirm them on the Pi (v4l2-ctl --list-devices) before first use:
-    ssh <user>@pi1.local
-    source ~/servoenv/bin/activate
-    python ~/robot_server_front_side_eval.py
-
-Then on the Mac:
     conda activate smolvla
     python eval_harness_2cam.py [--trials N] [--start-trial N]
 """

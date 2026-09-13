@@ -1,39 +1,9 @@
 """
-Automated evaluation trial harness (runs entirely on the Mac).
-
-One run = one model. Start the matching Pi-side server first (see copies/), then run:
+Mac-side evaluation trial harness. Runs N_TRIALS against one model, logging outcome, timing,
+safety-clamp events, and video per trial. Start the matching Pi-side server first, then:
 
     conda activate smolvla
-    python eval_harness.py --model 1cam
-    python eval_harness.py --model 2cam
-    python eval_harness.py --model side_claw
-
-For each of N_TRIALS (default 50) trials:
-  1. Torque is released the moment a trial ends (see below), through the whole
-     RESET_COUNTDOWN_S (default 8s) reset countdown, and re-engaged right before the next
-     trial starts. (Requires the Pi server to support the "torque" command — use the
-     *_EVAL / RECONSTRUCTED variants in copies/, not robot_server_side_claw_VERIFIED.py.)
-  2. Recording + timer start automatically once torque is back on.
-  3. A trial ends one of two ways:
-       - you press 'n' the moment you judge the attempt is over (success, failure, whatever —
-         you decide by watching it), or
-       - TRIAL_TIMEOUT_S (default 120s / 2 min) elapses with no 'n' press — logged as an
-         overtime trial. The arm is NOT auto-returned anywhere; torque is released and you
-         reposition it by hand, same as any other trial.
-     ('q' quits the whole session instead of ending just this trial.)
-  4. Ended by 'n' → the full 1-4 rubric. Overtime → a reduced 3-choice question (completed but
-     too slow / grasped or touched it but didn't finish / never touched it at all) → logged as
-     "timeout_success_slow" / "timeout_grasped" / "timeout_no_touch", duration logged at the
-     max time.
-  5. Everything else (video, timing, latency, clamp events) is logged automatically.
-  6. The next trial's reset countdown starts right after grading — no separate confirmation
-     step in between.
-
-After all trials for a model, a summary table is generated (see summarize_eval.py).
-
-Clamp-event detection needs no Pi-side clamp counter: every Pi server variant in copies/
-already returns `action_sent` (the value actually executed, possibly clamped) in its action
-ack. Comparing that to the action we requested is enough to detect and count clamp events.
+    python eval_harness.py --model 1cam|2cam|side_claw
 """
 
 import argparse

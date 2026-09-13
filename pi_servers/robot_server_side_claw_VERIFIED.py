@@ -1,9 +1,4 @@
-# Verified copy — unchanged from the side+claw implementation report (Backgroud information/
-# LeRobot_SO101_Side_Claw_SmolVLA_Implementation_Report.pdf, section 11). This is the current
-# Pi server as documented; no evaluation-specific changes needed for this one, since it already
-# returns `action_sent` in its ack, which the eval harness uses for clamp-event detection.
-#
-# Deploy target on the Pi: /home/<user>/robot_server.py
+# Raspberry Pi server for the side+claw SO-101 config, exactly as originally deployed.
 
 import pickle
 import numpy as np

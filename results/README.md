@@ -15,7 +15,7 @@ were produced.
 
 `outcome` is one of 8 pre-registered categories: `full_success`, `grasp_only`, `reach_only`,
 `no_engagement`, `timeout_success_slow`, `timeout_grasped`, `timeout_no_touch`,
-`timeout_object_oob` — full definitions in `EVALUATION_PROTOCOL.md` §4.
+`timeout_object_oob` — full definitions in `EVALUATION_PROTOCOL.md`.
 
 ## Videos
 

@@ -1,62 +1,10 @@
-# RECONSTRUCTED compatibility server — NOT the original historical file.
-#
-# We do not have a preserved copy of the exact Pi server that was used for the front+side
-# (2-camera) dataset/model. This file is rebuilt from the verified side+claw server
-# (robot_server_side_claw_VERIFIED.py) by swapping the camera roles:
-#   side + claw   ->   front + side
-#
-# Must be documented in the writeup as a recreated compatibility server, not claimed to be
-# the original source used during that experiment.
-#
-# Camera hardware, updated 2026-09-11: the claw camera (5MP USB) is now disconnected entirely
-# and not used by this server. Two Logitech HD Pro Webcam C920 units are connected instead —
-# genuinely two side cameras (left/right). Confirmed via v4l2-ctl --list-devices AND
-# lerobot-find-cameras opencv (both individually verified to open and capture a real frame):
-#   HD Pro Webcam C920 (usb-xhci-hcd.0-2) -> /dev/video2 (capture node)
-#   HD Pro Webcam C920 (usb-xhci-hcd.1-2) -> /dev/video0 (capture node, on a SEPARATE USB
-#     controller than the other camera — moved there deliberately to rule out USB bandwidth
-#     contention as a cause of the connection failures below)
-# If either feed looks wrong/swapped once you check recorded video, swap CAMERA_INDEX_FRONT
-# and CAMERA_INDEX_SIDE below.
-#
-# The variable/dict names stay "front"/"side" — that's not a description of camera placement,
-# it's the literal feature-key naming the trained checkpoint expects as input and can't be
-# renamed without breaking the model. Physically both are side-mounted cameras now (left/right).
-# This is still not the original 2-camera hardware setup used to train this model (unknown
-# original camera placement) — a best-available reconstruction, not a faithful reproduction.
-#
-# 2026-09-11: root-caused and fixed a real connection failure, not a bandwidth issue after all.
-# robot.connect() kept failing on /dev/video2 with "failed to set capture_width=640
-# (actual_width=640, width_success=False)" plus a "Bad file descriptor" on VIDIOC_QBUF.
-# Isolated testing (check_video2_alone.py) proved this camera's driver ALWAYS returns False
-# from cv2 .set() for width/height/fourcc — even when the actual resulting value already
-# matches what was requested (640x480) — a known quirk with some UVC drivers, not a real
-# failure; the camera opens and captures real 640x480 frames fine. LeRobot's OpenCVCamera
-# (_validate_width_and_height / _validate_fps in camera_opencv.py) treats any False from
-# .set() as fatal regardless of the actual value, which turned this harmless quirk into a hard
-# crash. Tried leaving width/height/fps unset in the config to sidestep the check entirely —
-# blocked: SO101FollowerConfig.__post_init__ (robots/config.py) requires width/height/fps to
-# be set on every camera used by a robot, no way around that at the config level. Real fix:
-# monkey-patch just those two validation methods (below, before connecting) to check the
-# ACTUAL resulting value instead of trusting the driver's unreliable success flag — the
-# installed lerobot package itself is untouched, this only affects this process's copy of the
-# class, and only changes what counts as a genuine failure (a real value mismatch still raises).
-#
-# 2026-09-02: added motor-load HOLD/E-STOP safety, ported from robot_server_1cam_EVAL.py
-# (originally from Smoth VLA/robot_server_new.py), after a real overheating incident on this
-# exact server — it previously had NO load/current protection at all, only the robot's
-# per-step angle clamp (max_relative_target), which does nothing to stop a motor sustaining
-# high current against a mechanical limit or obstruction over many steps. Now identical
-# protection to the 1cam server: HOLD skips an action if load crosses 68% of rated torque,
-# E-STOP disables torque entirely at 88% and requires an explicit reset_estop command.
-#
-# Also ported 1cam's SAFE_LIMITS absolute per-joint angle clipping, same day, same reasoning:
-# max_relative_target alone only bounds how big ONE step is — it does nothing to stop the arm
-# reaching an extreme/unsafe absolute position gradually over many small steps, which could
-# push a joint against its own mechanical hard-stop. Every action is now clipped to the same
-# absolute-angle ranges as the 1cam server (same physical arm, same calibration) BEFORE being
-# handed to robot.send_action(), which still applies its own max_relative_target on top — two
-# independent layers instead of one.
+# Raspberry Pi server for the 2-camera ("side left + side right") SO-101 config. Reconstructed
+# from the side+claw server — the original file used to train this model wasn't preserved, so
+# this is a best-available recreation, not a faithful reproduction of the original setup.
+# Feature keys stay named "front"/"side" (the trained checkpoint's literal input names), even
+# though both cameras are physically side-mounted. Includes motor-load HOLD/E-STOP, SAFE_LIMITS
+# angle clipping, and a monkey-patch working around a UVC driver quirk where
+# cv2.VideoCapture.set() reports failure even when the requested value was actually applied.
 
 import math
 import pickle
