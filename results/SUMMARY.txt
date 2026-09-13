@@ -1,0 +1,55 @@
+
+## 1 Camera (left side) (1cam)  —  N = 50
+Outcome                Count       %
+full_success              10   20.0%
+grasp_only                 0    0.0%
+reach_only                 1    2.0%
+no_engagement              0    0.0%
+timeout_success_slow       0    0.0%
+timeout_grasped           17   34.0%
+timeout_no_touch          14   28.0%
+timeout_object_oob         8   16.0%
+
+Mean time-to-completion (all trials): 158.4s
+Mean time-to-completion (successes only): 73.5s
+Mean safety-clamp events per trial: 620.92
+Mean loop latency: 97 ms
+
+## 2 Cameras (side left + side right) (2cam)  —  N = 50
+Outcome                Count       %
+full_success               1    2.0%
+grasp_only                 0    0.0%
+reach_only                 0    0.0%
+no_engagement              0    0.0%
+timeout_success_slow       0    0.0%
+timeout_grasped            6   12.0%
+timeout_no_touch          39   78.0%
+timeout_object_oob         4    8.0%
+
+Mean time-to-completion (all trials): 178.2s
+Mean time-to-completion (successes only): 84.7s
+Mean safety-clamp events per trial: 388.80
+Mean loop latency: 160 ms
+
+## Side + Claw (side_claw)  —  N = 50
+Outcome                Count       %
+full_success              15   30.0%
+grasp_only                 1    2.0%
+reach_only                 0    0.0%
+no_engagement              0    0.0%
+timeout_success_slow       4    8.0%
+timeout_grasped            7   14.0%
+timeout_no_touch          23   46.0%
+timeout_object_oob         0    0.0%
+
+Mean time-to-completion (all trials): 149.0s
+Mean time-to-completion (successes only): 83.6s
+Mean safety-clamp events per trial: 1.64
+Mean loop latency: 253 ms
+
+## Cross-model comparison
+
+Model              N   Full success  Mean time(s)  Clamps/trial  Latency(ms)
+1cam              50    10/50 (20%)         158.4        620.92           97
+2cam              50      1/50 (2%)         178.2        388.80          160
+side_claw         50    15/50 (30%)         149.0          1.64          253
