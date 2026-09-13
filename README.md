@@ -178,13 +178,15 @@ Full details, including every bug found and fixed, are in
 
 ## What's next (V2)
 
-- Reproduce the best-performing configuration (side + claw) on new/upgraded hardware and
-  re-measure, rather than assuming the result transfers.
-- Then revisit the 2-camera config, changing one variable at a time instead of multiple
-  simultaneous hardware changes.
-- Consider an offline held-out action-prediction-error metric if a genuine train/validation
-  split is introduced (dropped for V1 — see
-  [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md)).
+V2 tests a specific hypothesis, rather than assuming it: that the laptop used to train every V1
+checkpoint was itself a limiting factor. The plan is to reproduce the best-performing V1
+configuration — side + claw, 30% full success here — on new/upgraded hardware (a dedicated GPU),
+changing that one variable and measuring directly against this evaluation's baseline (149.0s
+mean time, 1.64 clamps/trial), rather than changing the camera setup and the hardware at once.
+
+Separately, worth considering for V2 or later: an offline held-out action-prediction-error
+metric, if a genuine train/validation split is introduced (dropped for V1 — see
+[`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md)).
 
 ## Repo structure
 
