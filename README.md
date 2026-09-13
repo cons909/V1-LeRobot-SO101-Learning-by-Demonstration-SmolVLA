@@ -128,16 +128,16 @@ Full outcome breakdown (all 8 graded categories) for each model is in
 ## Sample videos
 
 One `full_success` and one representative-failure clip per model (the rest of the 150 videos are
-on Hugging Face Hub, linked above). Click a link to open the file's page, where GitHub plays it
-inline. Only one camera's footage ships per multi-camera config, to avoid a family member
-appearing in the dropped camera's frame — this does not affect the logged results, only which raw
-video clips are published.
+on Hugging Face Hub, linked above — GitHub's own file preview doesn't reliably play video, so
+those pages are the better place to actually watch one). Only one camera's footage ships per
+multi-camera config, to avoid a family member appearing in the dropped camera's frame — this does
+not affect the logged results, only which raw video clips are published.
 
 | Config | Full success | Representative failure |
 |---|---|---|
-| 1 camera | [watch](media/1cam_trial007_full_success.mp4) | [watch](media/1cam_trial004_timeout_grasped.mp4) |
-| 2 cameras | [watch](media/2cam_trial017_full_success.mp4) | [watch](media/2cam_trial002_timeout_no_touch.mp4) |
-| Side + claw | [watch](media/side_claw_trial018_full_success.mp4) | [watch](media/side_claw_trial005_timeout_no_touch.mp4) |
+| 1 camera | [view/download](media/1cam_trial007_full_success.mp4) | [view/download](media/1cam_trial004_timeout_grasped.mp4) |
+| 2 cameras | [view/download](media/2cam_trial017_full_success.mp4) | [view/download](media/2cam_trial002_timeout_no_touch.mp4) |
+| Side + claw | [view/download](media/side_claw_trial018_full_success.mp4) | [view/download](media/side_claw_trial005_timeout_no_touch.mp4) |
 
 ## Challenges along the way
 
