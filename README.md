@@ -32,6 +32,7 @@ not try to improve on those results.
 - [What I learned](#what-i-learned)
 - [Challenges along the way](#challenges-along-the-way)
 - [What's next (V2)](#whats-next-v2)
+- [How to run this](#how-to-run-this)
 - [Repo structure](#repo-structure)
 - [License](#license)
 
@@ -50,8 +51,15 @@ a demo reel of the best runs.
   (cable-length constraint), and the side-camera mounts were hand-built to keep the cameras
   rigid between trials.
 - **Cameras:** Logitech C920s, in three configurations (see below).
+- **Training hardware:** all three checkpoints were trained on a MacBook M4 — the same laptop,
+  no dedicated GPU. This is the detail V2 is built around (see
+  [What's next](#whats-next-v2)): whether that laptop was itself a limiting factor is an open
+  question this evaluation can't answer on its own.
 
 ## The three configurations
+
+Each configuration's dataset is 80 teleoperated demonstrations, roughly 17–19 seconds each — so
+each dataset represents about 24 minutes of raw demonstration time.
 
 | Config | Cameras | Demonstrations | Checkpoint step | Notes |
 |---|---|:-:|:-:|---|
@@ -123,6 +131,45 @@ config's near-total shift toward `timeout_no_touch` (78% of its trials) stands o
 dominant failure mode — it rarely engaged the object at all, rather than engaging and failing
 partway through.
 
+**A confound worth stating plainly:** checkpoint steps differ across configs (20k / 50k / 20k),
+so camera placement and training duration are not independently tested here. The 2-camera config
+trained 2.5x longer than the other two and still finished last, which is the opposite of what
+"more training, better result" would predict — and that's worth taking seriously rather than
+explaining away. A few concrete, real possibilities for why the 2-camera checkpoint could be worse
+*because* of the extra training, not despite it:
+
+- **Overfitting to the 80 training demonstrations.** V1 has no held-out validation split (see
+  [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) §7) — nothing here would have
+  caught the policy memorizing training-specific motion instead of generalizing, and 50k steps is
+  more opportunity for that to happen than 20k.
+- **A longer run without early stopping can drift past its best point.** Imitation learning on a
+  small dataset is known to get worse on real deployment even as training loss keeps falling —
+  it's possible the 2-camera checkpoint's best moment was earlier than 50k and this evaluation
+  simply didn't catch it.
+- **Two camera inputs is a materially bigger input space than one or two-well-placed cameras**,
+  and might need more (or differently scheduled) training to use well — so "2.5x the steps" may
+  not mean "2.5x as trained" in any comparable sense across configs.
+
+None of this rules out the opposite explanation — that camera placement really is the dominant
+factor and training length is incidental — and this evaluation has no way to tell those apart.
+That's exactly the point: this result can't cleanly separate "this camera placement is worse"
+from "something about this specific training run was worse," so reporting "placement seems to
+matter more than camera count" as this evaluation's headline finding is a claim this data can
+suggest, not one it can fully defend. Isolating that — same hardware, same training budget, only
+the camera setup changing — is exactly the single-variable test V2 is designed to run.
+
+The safety-clamp counts deserve more than a table cell, too. 1-camera and 2-camera averaged
+620.92 and 388.80 clamp events per trial; side + claw averaged 1.64 — two to three orders of
+magnitude lower, not just "fewer." A clamp event means the policy requested a joint angle beyond
+the arm's safe limits and got overridden, so a trial with hundreds of them means the arm spent
+most of that trial executing something other than what the policy actually asked for. That's a
+plausible explanation for part of the success-rate gap above it, not just a side effect of it: a
+policy fighting the safety limiter through nearly the whole trial has degraded fine motor control
+exactly where precision matters most — approaching and closing on the object. Whether that's
+because the extra camera view produced more in-bounds predictions, or this particular checkpoint
+simply clamped less for unrelated reasons, isn't something this evaluation can distinguish — but
+it suggests the clamp rate is worth tracking in V2 as a real signal, not an afterthought metric.
+
 Full outcome breakdown (all 8 graded categories) for each model is in
 [`results/SUMMARY.txt`](results/SUMMARY.txt).
 
@@ -178,15 +225,33 @@ Full details, including every bug found and fixed, are in
 
 ## What's next (V2)
 
-V2 tests a specific hypothesis, rather than assuming it: that the laptop used to train every V1
-checkpoint was itself a limiting factor. The plan is to reproduce the best-performing V1
-configuration — side + claw, 30% full success here — on new/upgraded hardware (a dedicated GPU),
-changing that one variable and measuring directly against this evaluation's baseline (149.0s
-mean time, 1.64 clamps/trial), rather than changing the camera setup and the hardware at once.
+V2 tests the training-hardware question directly, rather than assuming an answer: reproduce the
+best-performing V1 configuration — side + claw, 30% full success here — on new/upgraded hardware
+(a dedicated GPU, replacing the MacBook M4 above), changing that one variable and measuring
+directly against this evaluation's baseline (149.0s mean time, 1.64 clamps/trial), rather than
+changing the camera setup and the hardware at once.
 
 Separately, worth considering for V2 or later: an offline held-out action-prediction-error
 metric, if a genuine train/validation split is introduced (dropped for V1 — see
 [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md)).
+
+## How to run this
+
+1. **Mac side:** `conda activate smolvla`, then set `PI_IP` at the top of
+   [`harness/eval_harness.py`](harness/eval_harness.py) to your Pi's current address.
+2. **Pi side:** `ssh` into the Pi, `source ~/servoenv/bin/activate`, and start the server that
+   matches the model you're evaluating — `robot_server_1cam_EVAL.py`,
+   `robot_server_front_side_RECONSTRUCTED.py`, or `robot_server_side_claw_EVAL.py` (all in
+   [`pi_servers/`](pi_servers/); copy the file onto the Pi yourself first, there's no direct Pi
+   filesystem access from this repo).
+3. **Run a trial session:** back on the Mac, `python harness/eval_harness.py --model 1cam` (or
+   `2cam` / `side_claw`). Each trial is graded live — see
+   [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) for exactly how.
+4. **Regenerate the results table:** `python harness/summarize_eval.py --all` from inside this
+   repo, once trials exist in `results/`.
+
+Full setup detail and everything that went wrong building this harness is in
+[`docs/EVAL_HARNESS_DESIGN.md`](docs/EVAL_HARNESS_DESIGN.md).
 
 ## Repo structure
 
@@ -195,7 +260,7 @@ docs/          Evaluation protocol + harness design/build log
 harness/       Mac-side evaluation runner scripts
 pi_servers/    Raspberry Pi-side robot/camera control servers
 results/       Per-model trial_log.csv + generated summary tables
-media/         Sample videos + results chart (full dataset of 150 videos on Hugging Face Hub)
+media/         Sample videos + results chart (full 150-video dataset on Hugging Face Hub)
 ```
 
 ## License
