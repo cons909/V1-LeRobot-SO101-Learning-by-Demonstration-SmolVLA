@@ -55,10 +55,8 @@ a demo reel of the best runs.
   (cable-length constraint), and the side-camera mounts were hand-built to keep the cameras
   rigid between trials.
 - **Cameras:** Logitech C920s, in three configurations (see below).
-- **Training hardware:** all three checkpoints were trained on a MacBook M4 — the same laptop,
-  no dedicated GPU. This is the detail V2 is built around (see
-  [What's next](#whats-next-v2)): whether that laptop was itself a limiting factor is an open
-  question this evaluation can't answer on its own.
+- **Training hardware:** all three checkpoints were trained on the same MacBook M4, no dedicated
+  GPU.
 
 ## The three configurations
 
