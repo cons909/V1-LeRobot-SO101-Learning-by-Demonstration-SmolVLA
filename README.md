@@ -212,7 +212,10 @@ What surprised me most was the gap between the 1-camera and 2-camera results —
 has no depth perception and the narrowest field of view of the three, and it still clearly
 outperformed 2 cameras. I genuinely couldn't explain why the 2-camera config was doing so badly at
 the time, which is part of why I pushed that checkpoint to 50k steps instead of 20k — hoping more
-training would fix what placement apparently wasn't. It didn't. Going in, I'd expected the
+training would fix what placement apparently wasn't. It didn't work, and it's possible the extra
+training made things worse rather than just failing to help — memorizing the training
+demonstrations instead of generalizing is a real possibility I can't rule out here. I'll get a
+better sense of that as V2 moves forward. Going in, I'd expected the
 opposite of what actually happened: I thought 2 cameras would win, since depth perception and a
 wider view of the workspace seemed like a clear advantage, and I expected side + claw to do the
 worst, since the claw camera flips upside down and swings through a constantly changing
