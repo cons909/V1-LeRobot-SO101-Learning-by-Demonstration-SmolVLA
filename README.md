@@ -227,11 +227,22 @@ Full details, including every bug found and fixed, are in
 
 ## What's next (V2)
 
-V2 tests the training-hardware question directly, rather than assuming an answer: reproduce the
-best-performing V1 configuration — side + claw, 30% full success here — on new/upgraded hardware
-(a dedicated GPU, replacing the MacBook M4 above), changing that one variable and measuring
-directly against this evaluation's baseline (149.0s mean time, 1.64 clamps/trial), rather than
-changing the camera setup and the hardware at once.
+V2 tests whether the shared training hardware (a MacBook M4, no dedicated GPU) was itself a
+limiting factor, rather than assuming an answer: reproduce the best-performing V1 configuration —
+side + claw, 30% full success here — on new hardware (a dedicated NVIDIA GPU), changing that one
+variable and measuring directly against this evaluation's baseline (149.0s mean time, 1.64
+clamps/trial), rather than changing the camera setup and the hardware at once. Unlike V1, V2 does
+aim to improve the grasp success rate — methodically, one variable at a time, not by re-running
+everything at once and hoping.
+
+V2 is done when there's a video of repeatable grasps, a success rate measured and compared
+against the V1 baseline above, an updated repo, and a write-up of what the hardware comparison
+actually showed.
+
+The GPU is sized for more than V2 alone: SmolVLA (~450M parameters) itself needs relatively
+little, but the phases after V2 — reinforcement learning, and eventually a full robotic torso —
+need substantially more, so the hardware choice accounts for that longer arc rather than just
+V2's immediate requirements.
 
 Separately, worth considering for V2 or later: an offline held-out action-prediction-error
 metric, if a genuine train/validation split is introduced (dropped for V1 — see
