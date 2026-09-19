@@ -2,8 +2,8 @@
 
 # V1 — LeRobot SO-101: Learning by Demonstration with SmolVLA
 
-**Teaching a low-cost robotic arm to pick and place, purely from human demonstration —
-and honestly reporting what worked and what didn't across three camera configurations.**
+**I taught a low-cost robotic arm to pick and place, purely from human demonstration —
+and I'm honestly reporting what worked and what didn't across three camera configurations.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Built with LeRobot](https://img.shields.io/badge/Built%20with-LeRobot-blue)](https://github.com/huggingface/lerobot)
@@ -14,12 +14,12 @@ and honestly reporting what worked and what didn't across three camera configura
 
 ---
 
-A pick-and-place task (screwdriver → gray bin) taught to a low-cost SO-101 robotic arm through
+I taught a low-cost SO-101 robotic arm a pick-and-place task (screwdriver → gray bin) through
 imitation learning, using HuggingFace's [LeRobot](https://github.com/huggingface/lerobot)
 framework and the [SmolVLA](https://huggingface.co/blog/smolvla) vision-language-action policy.
-This is **V1**: three camera configurations were built, trained, and evaluated under one
-pre-registered protocol. This repo documents what was tried and what actually happened — it does
-not try to improve on those results.
+This is **V1**: I built, trained, and evaluated three camera configurations under one
+pre-registered protocol. This repo documents what I tried and what actually happened — it
+doesn't try to improve on those results.
 
 <div align="center">
 <img src="media/charts and images/Image_arm_01.jpeg" alt="The SO-101 arm with claw gripper, mounted at the workbench" width="480">
@@ -42,10 +42,10 @@ not try to improve on those results.
 
 ## Goal
 
-Teach a robotic arm to pick up a screwdriver from a table and place it in a gray bin, purely from
-human teleoperation demonstrations (no scripted motion, no classical planning) — then compare
-three different camera setups honestly, with a real evaluation protocol and real data, not just
-a demo reel of the best runs.
+I wanted to teach a robotic arm to pick up a screwdriver from a table and place it in a gray bin,
+purely from human teleoperation demonstrations (no scripted motion, no classical planning) —
+then compare three different camera setups honestly, with a real evaluation protocol and real
+data, not just a demo reel of the best runs.
 
 ## Hardware setup
 
@@ -136,11 +136,12 @@ dominant failure mode — it rarely engaged the object at all, rather than engag
 partway through.
 
 **A confound worth stating plainly:** checkpoint steps differ across configs (20k / 50k / 20k),
-so camera placement and training duration are not independently tested here. The 2-camera config
-trained 2.5x longer than the other two and still finished last, which is the opposite of what
-"more training, better result" would predict — and that's worth taking seriously rather than
-explaining away. A few concrete, real possibilities for why the 2-camera checkpoint could be worse
-*because* of the extra training, not despite it:
+so camera placement and training duration are not independently tested here. I pushed the
+2-camera checkpoint to 50k steps specifically because it was underperforming at 20k and I hoped
+more training would fix it — it didn't: the 2-camera config trained 2.5x longer than the other
+two and still finished last, the opposite of what "more training, better result" would predict —
+and that's worth taking seriously rather than explaining away. A few concrete, real possibilities
+for why the 2-camera checkpoint could be worse *because* of the extra training, not despite it:
 
 - **Overfitting to the 80 training demonstrations.** V1 has no held-out validation split —
   nothing here would have caught the policy memorizing training-specific motion instead of
@@ -207,6 +208,17 @@ not affect the logged results, only which raw video clips are published.
 - **N = 50 trials is enough to see clear directional differences, not enough for strong
   statistical claims.** That's a real limitation of this evaluation, not something to gloss over.
 
+What surprised me most was the gap between the 1-camera and 2-camera results — the 1-camera setup
+has no depth perception and the narrowest field of view of the three, and it still clearly
+outperformed 2 cameras. I genuinely couldn't explain why the 2-camera config was doing so badly at
+the time, which is part of why I pushed that checkpoint to 50k steps instead of 20k — hoping more
+training would fix what placement apparently wasn't. It didn't. Going in, I'd expected the
+opposite of what actually happened: I thought 2 cameras would win, since depth perception and a
+wider view of the workspace seemed like a clear advantage, and I expected side + claw to do the
+worst, since the claw camera flips upside down and swings through a constantly changing
+background — I assumed that much visual noise would throw the model off. It ended up being the
+best of the three.
+
 ## Challenges along the way
 
 - **Motor safety incident:** partway through evaluation, a wrist motor overheated during a run —
@@ -228,17 +240,17 @@ Full details, including every bug found and fixed, are in
 
 ## What's next (V2)
 
-V2 tests whether the shared training hardware (a MacBook M4, no dedicated GPU) was itself a
-limiting factor, rather than assuming an answer: reproduce the best-performing V1 configuration —
-side + claw, 30% full success here — on new hardware (a dedicated NVIDIA GPU), changing that one
-variable and measuring directly against this evaluation's baseline (149.0s mean time, 1.64
-clamps/trial), rather than changing the camera setup and the hardware at once. Unlike V1, V2 does
-aim to improve the grasp success rate — methodically, one variable at a time, not by re-running
-everything at once and hoping.
+For V2, I want to test whether the shared training hardware (a MacBook M4, no dedicated GPU) was
+itself a limiting factor, rather than assuming an answer: reproduce the best-performing V1
+configuration — side + claw, 30% full success here — on new hardware (a dedicated NVIDIA GPU),
+changing that one variable and measuring directly against this evaluation's baseline (149.0s mean
+time, 1.64 clamps/trial), rather than changing the camera setup and the hardware at once. Unlike
+V1, V2 does aim to improve the grasp success rate — methodically, one variable at a time, not by
+re-running everything at once and hoping.
 
-V2 is done when there's a video of repeatable grasps, a success rate measured and compared
-against the V1 baseline above, an updated repo, and a write-up of what the hardware comparison
-actually showed.
+I'll consider V2 done when there's a video of repeatable grasps, a success rate measured and
+compared against the V1 baseline above, an updated repo, and a write-up of what the hardware
+comparison actually showed.
 
 ## How to run this
 
@@ -284,7 +296,7 @@ MIT — see [`LICENSE`](LICENSE).
 
 <div align="center">
 
-*This is a college-admissions portfolio project. The goal of V1 was to document three
+*This is a college-admissions portfolio project. My goal for V1 was to document three
 already-built configurations honestly, including their failures, not to optimize them further.*
 
 </div>
