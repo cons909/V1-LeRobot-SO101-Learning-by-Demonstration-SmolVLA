@@ -21,6 +21,10 @@ This is **V1**: three camera configurations were built, trained, and evaluated u
 pre-registered protocol. This repo documents what was tried and what actually happened — it does
 not try to improve on those results.
 
+<div align="center">
+<img src="media/charts/Image_arm_01.jpeg" alt="The SO-101 arm with claw gripper, mounted at the workbench" width="480">
+</div>
+
 ## Contents
 
 - [Goal](#goal)
@@ -260,7 +264,7 @@ docs/          Evaluation protocol + harness design/build log
 harness/       Mac-side evaluation runner scripts
 pi_servers/    Raspberry Pi-side robot/camera control servers
 results/       Per-model trial_log.csv + generated summary tables
-media/         Sample videos + results chart (full 150-video dataset on Hugging Face Hub)
+media/         Sample videos + arm photo + results chart (full 150-video dataset on Hugging Face Hub)
 ```
 
 ## License
