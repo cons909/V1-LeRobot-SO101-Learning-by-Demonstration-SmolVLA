@@ -1,5 +1,5 @@
-# Raspberry Pi server for the side+claw SO-101 config. Same as robot_server_side_claw_VERIFIED.py
-# plus a "torque" command, so the Mac harness can release/re-engage the servos between trials.
+# Raspberry Pi server for the side+claw SO-101 config, with a "torque" command so the Mac
+# harness can release/re-engage the servos between trials. Ran all 50 published side+claw trials.
 
 import pickle
 import numpy as np

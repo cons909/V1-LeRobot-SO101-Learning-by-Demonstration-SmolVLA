@@ -55,8 +55,8 @@ a demo reel of the best runs.
   (cable-length constraint), and the side-camera mounts were hand-built to keep the cameras
   rigid between trials.
 - **Cameras:** 1 camera — one side-mounted Logitech C920; 2 cameras — two side-mounted Logitech
-  C920s; side + claw — one side-mounted Logitech C920 plus a claw-mounted camera (see the table
-  below for exact placement per config).
+  C920s; side + claw — one side-mounted Logitech C920 plus a claw-mounted SVPRO 5MP USB camera
+  module (M12 lens, 120° wide-angle, IMX335 sensor).
 - **Training hardware:** all three checkpoints were trained on the same MacBook M4, no dedicated
   GPU.
 
