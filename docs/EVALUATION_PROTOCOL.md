@@ -1,10 +1,8 @@
 # Evaluation Protocol — SO-101 Screwdriver-to-Bin Task
 
 Pre-registered before running trials. Defines success criteria, controls, and metrics for
-comparing the three camera configurations (1 camera / 2 cameras / claw+side). Written to be
-reproducible and defensible in a portfolio/competition context (ISEF-style: no fabricated or
-post-hoc-adjusted data). Trials are run with `eval_harness.py`; see `EVAL_HARNESS_DESIGN.md`
-for the automation architecture.
+comparing the three camera configurations (1 camera / 2 cameras / claw+side). Trials are run
+with `eval_harness.py`; see `EVAL_HARNESS_DESIGN.md` for the automation architecture.
 
 ## 1. Controls (hold constant across all trials, all models)
 - Same physical screwdriver and gray bin.
@@ -24,30 +22,37 @@ Positions are generalized: the screwdriver is not placed at one fixed, memorized
 trial — it varies naturally within the reachable workspace across the trial set, so results
 reflect generalization rather than memorization of a single placement.
 
-## 4. Success rubric (graded, decided in advance)
+## 4. Success rubric (decided in advance)
+
+All 8 possible outcomes a trial can be logged as:
+
+**If the operator ends the trial manually (presses `n`), one of:**
 1. **Full success** — object grasped and placed inside the bin.
 2. **Grasp only** — object grasped but dropped/misplaced before reaching the bin.
 3. **Reach only** — arm moved toward the object, no stable grasp achieved.
 4. **No meaningful engagement** — arm stayed near average/home pose or moved unrelated to the
    object ("collapsed to average action" failure mode).
 
+**If the trial instead runs out the full `TRIAL_TIMEOUT_S`** (180s / 3 min) with no `n` press,
+categories 1-4 above don't apply — a separate, reduced rubric applies instead, one of:
+5. **Timeout, success but slow** (`timeout_success_slow`) — grasped the object and placed it in
+   the bin, just not before the clock ran out.
+6. **Timeout, grasped** (`timeout_grasped`) — grasped or touched the object at some point but
+   didn't finish.
+7. **Timeout, no touch** (`timeout_no_touch`) — never touched the object at all.
+8. **Timeout, object out of bounds** (`timeout_object_oob`) — the object ended up out of the
+   arm's reach, so it never got a chance to grab it.
+
 A trial ends when the operator presses `n` — the operator watches the arm and judges in real
 time when the attempt is over (succeeded, failed, stuck, whatever happened), and immediately
 after that is prompted with the fixed rubric above. Not adjusted after the fact based on how the
 run "felt" — the grading happens in the same moment the trial is judged over, not retroactively.
 
-**Overtime trials get a different, reduced rubric.** If a trial runs the full `TRIAL_TIMEOUT_S`
-(currently 180s / 3 min — check the harness file, this has been tuned more than once) with no
-`n` press, the full 1-4 rubric above doesn't apply — the harness asks a reduced 4-choice question
-instead: did it grasp the object and place it in the bin, just too slowly
-(`timeout_success_slow`); did it grasp/touch the object at some point but not finish
-(`timeout_grasped`); did it never touch the object at all (`timeout_no_touch`); or did the object
-fall out of bounds so it never got a chance to grab it (`timeout_object_oob`)? The arm is **not**
-auto-returned anywhere on a timeout — torque releases and the operator repositions it by hand,
-same as any other trial end. Time-to-completion for these trials is logged at the max time —
-they're explicitly marked as overtime (`stop_reason = timeout`), not folded into the
-normal 1-4 categories, since "ran out of time" is a materially different failure mode from the
-model confidently reaching a wrong conclusion within a normal timeframe.
+The arm is **not** auto-returned anywhere on a timeout — torque releases and the operator
+repositions it by hand, same as any other trial end. Time-to-completion for timeout trials is
+logged at the max time — they're explicitly marked as overtime (`stop_reason = timeout`), not
+folded into categories 1-4, since "ran out of time" is a materially different failure mode from
+the model confidently reaching a wrong conclusion within a normal timeframe.
 
 Safety-clamp events are **not** a rubric outcome — they're logged as a continuous per-trial
 count instead (see the per-trial metrics section below), since a trial can have clamp events and still succeed, or have none and
@@ -74,21 +79,15 @@ parsing the Pi terminal's printed warnings.
 **How a trial ends:** the operator judges it live and presses `n` (deliberately not a fixed
 proximity-to-home check — the arm doesn't need to return to any exact position for a trial to
 count as over, since a completed pick-and-place can end almost anywhere in the workspace). The
-120s timeout is the only automatic backstop, for a trial the operator didn't end in time. `q`
-quits the whole session instead of ending just the current trial.
+180s (3 min) timeout is the only automatic backstop, for a trial the operator didn't end in time.
+`q` quits the whole session instead of ending just the current trial.
 
 **Reset pacing is fixed, not operator-gated.** Right after a trial is graded and logged, the
 next `RESET_COUNTDOWN_S` (8s minimum) reset countdown begins automatically — there's no separate
 "press a key to continue" step between grading and the countdown; the `n` press that ends the
 trial is the only manual gate in the loop.
 
-## 7. Dropped: offline held-out action-prediction error
-Considered and dropped for V1. It would have compared predicted vs. recorded teleop actions on
-dataset episodes, but without a genuine train/validation split (training used the full dataset),
-it would only measure training-set fit, not real generalization — not worth the added complexity
-for what it would prove. Left as a possible V2 addition if a real held-out split is introduced.
-
-## 8. Reporting format
+## 7. Reporting format
 One results table per model (generated by `summarize_eval.py`): N, outcome counts/percentages
 across all 8 categories (`full_success`, `grasp_only`, `reach_only`, `no_engagement`,
 `timeout_success_slow`, `timeout_grasped`, `timeout_no_touch`, `timeout_object_oob`), mean

@@ -34,7 +34,7 @@ events + latency logged automatically, operator only grades the final outcome.
    - Loop latency: measured directly from the request/response round trip.
    - Trial-end check: the operator presses `n` the moment they judge the attempt is over —
      there is no proximity-to-home requirement, the arm can be anywhere (`stop_reason =
-     manual_end`). A 120s timeout (`TRIAL_TIMEOUT_S`) is the only automatic backstop
+     manual_end`). A 180s (3 min) timeout (`TRIAL_TIMEOUT_S`) is the only automatic backstop
      (`stop_reason = timeout`). `q` quits the whole session instead of ending just the trial.
 4. Torque releases immediately either way. Ended by `n` → the operator is prompted to grade it
    1-4 against the full rubric. Timed out → a reduced 3-choice question instead (completed but

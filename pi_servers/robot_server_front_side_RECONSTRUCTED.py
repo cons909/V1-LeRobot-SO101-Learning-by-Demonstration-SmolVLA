@@ -1,10 +1,7 @@
 # Raspberry Pi server for the 2-camera ("side left + side right") SO-101 config. Reconstructed
-# from the side+claw server — the original file used to train this model wasn't preserved, so
-# this is a best-available recreation, not a faithful reproduction of the original setup.
-# Feature keys stay named "front"/"side" (the trained checkpoint's literal input names), even
-# though both cameras are physically side-mounted. Includes motor-load HOLD/E-STOP, SAFE_LIMITS
-# angle clipping, and a monkey-patch working around a UVC driver quirk where
-# cv2.VideoCapture.set() reports failure even when the requested value was actually applied.
+# from the side+claw server, since the original file wasn't preserved — not a faithful
+# reproduction. Feature keys stay "front"/"side" (the checkpoint's literal input names), even
+# though both cameras are physically side-mounted.
 
 import math
 import pickle
