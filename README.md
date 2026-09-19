@@ -254,7 +254,7 @@ actually showed.
    [`harness/eval_harness.py`](harness/eval_harness.py) to your Pi's current address.
 4. **Pi side:** `ssh` into the Pi, `source ~/servoenv/bin/activate`, and start the server that
    matches the model you're evaluating — `robot_server_1cam_EVAL.py`,
-   `robot_server_front_side_RECONSTRUCTED.py`, or `robot_server_side_claw_EVAL.py` (all in
+   `robot_server_front_side_EVAL.py`, or `robot_server_side_claw_EVAL.py` (all in
    [`pi_servers/`](pi_servers/); copy the file onto the Pi yourself first, there's no direct Pi
    filesystem access from this repo).
 5. **Run a trial session:** back on the Mac, `python harness/eval_harness.py --model 1cam` (or
